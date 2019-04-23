@@ -29,6 +29,7 @@ const (
 	OptQuarantine   OptAction = 0x20
 
 	// mask out unwanted parts of the SMTP transaction
+        OptAllParts   OptProtocol = 0x00
 	OptNoConnect  OptProtocol = 0x01
 	OptNoHelo     OptProtocol = 0x02
 	OptNoMailFrom OptProtocol = 0x04
