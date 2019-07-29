@@ -7,6 +7,10 @@ import (
 
 // Milter is an interface for milter callback handlers
 type Milter interface {
+        // Abort current filter checks. Expected response:  NONE
+        // Resets internal state of milter program to before SMFIC_HELO, but keeps the connection open.        
+        Abort(m *Modifier)
+
 	// Connect is called to provide SMTP connection data for incoming message
 	//   supress with NoConnect
 	Connect(host string, family string, port uint16, addr net.IP, m *Modifier) (Response, error)
