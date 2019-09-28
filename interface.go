@@ -43,6 +43,10 @@ type Milter interface {
 	//   all changes to message's content & attributes must be done here
 	Body(m *Modifier) (Response, error)
 
+        // Close connection
+        // 
+        Close(m *Modifier)
+
         // Set dry run to true or false, helps with debugging and developing
         DryRun(v bool)
 }

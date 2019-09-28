@@ -208,6 +208,8 @@ func (m *milterSession) Process(msg *Message) (Response, error) {
 		return NewResponse('O', buffer.Bytes()), nil
 
 	case 'Q':
+                m.milter.Close(newModifier(m))
+
 		// client requested session close
 		return nil, eCloseSession
 
@@ -259,10 +261,6 @@ func (m *milterSession) HandleMilterCommands() {
 			// send back response message
 			if err = m.WritePacket(resp.Response()); err != nil {
 				log.Printf("Error writing packet: %v", err)
-				return
-			}
-
-			if !resp.Continue() {
 				return
 			}
 
