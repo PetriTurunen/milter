@@ -17,11 +17,10 @@ type MilterInit func() (Milter, OptAction, OptProtocol)
 // RunServer provides a convenient way to start a milter server
 // Handlers provide way to handle errors from panics
 // With nil handlers panics not recovered
-func RunServer(server net.Listener, init MilterInit, dryrun bool, handlers ...func(error)) error {
+func RunServer(server net.Listener, init MilterInit, handlers ...func(error)) error {
 	defaultServer.Listener = server
 	defaultServer.MilterFactory = init
 	defaultServer.ErrHandlers = handlers
-        defaultServer.DryRun = dryrun
 	return defaultServer.RunServer()
 }
 
@@ -37,7 +36,6 @@ type Server struct {
 	Listener      net.Listener
 	MilterFactory MilterInit
 	ErrHandlers   []func(error)
-        DryRun        bool
 	sync.WaitGroup
 }
 
@@ -84,9 +82,6 @@ func (s *Server) handleCon(conn net.Conn) {
 		sock:     conn,
 		milter:   milter,
 	}
-
-        // Pass on the dryrun flag
-        session.milter.DryRun(s.DryRun);
 
 	// handle connection commands
 	session.HandleMilterCommands()

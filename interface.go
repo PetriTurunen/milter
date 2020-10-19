@@ -46,7 +46,4 @@ type Milter interface {
         // Close connection
         // 
         Close(m *Modifier)
-
-        // Set dry run to true or false, helps with debugging and developing
-        DryRun(v bool)
 }
