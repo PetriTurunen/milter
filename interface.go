@@ -43,6 +43,8 @@ type Milter interface {
 	//   all changes to message's content & attributes must be done here
 	Body(m *Modifier) (Response, error)
 
+        Macro(name string, value string, m *Modifier)
+
         // Close connection
         // 
         Close(m *Modifier)

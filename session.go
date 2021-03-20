@@ -27,6 +27,7 @@ const (
 	OptRemoveRcpt   OptAction = 0x08
 	OptChangeHeader OptAction = 0x10
 	OptQuarantine   OptAction = 0x20
+        OptChangeFrom   OptAction = 0x40
 
 	// mask out unwanted parts of the SMTP transaction
         OptAllParts   OptProtocol = 0x00
@@ -133,7 +134,11 @@ func (m *milterSession) Process(msg *Message) (Response, error) {
 			Port = binary.BigEndian.Uint16(msg.Data)
 			msg.Data = msg.Data[2:]
                         if protocolFamily == '6' {
-                            msg.Data = msg.Data[5:] // ipv6 is in format IPv6:XXX:XX1
+                            // trim IPv6 prefix when necessary
+                            Prefix := []byte("IPv6:")
+                            if bytes.HasPrefix(msg.Data, Prefix) {
+                                msg.Data = bytes.TrimPrefix(msg.Data, Prefix)
+                            }
                         }
 		}
 		// get address
@@ -164,6 +169,11 @@ func (m *milterSession) Process(msg *Message) (Response, error) {
 				m.macros[data[i]] = data[i+1]
 			}
 		}
+
+                if len(data) == 2 {
+                    m.milter.Macro(data[0], data[1], newModifier(m))
+                }
+
 		// do not send response
 		return nil, nil
 
